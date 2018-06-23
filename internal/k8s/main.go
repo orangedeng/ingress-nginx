@@ -115,9 +115,20 @@ func GetPodDetails(kubeClient clientset.Interface) (*PodInfo, error) {
 			switch owner.Kind {
 			case "DaemonSet":
 				ds, _ := kubeClient.ExtensionsV1beta1().DaemonSets(podNs).Get(owner.Name, metav1.GetOptions{})
-				for k := range ds.Spec.Template.ObjectMeta.Labels {
-					labels[k] = ds.Spec.Template.ObjectMeta.Labels[k]
+				if ds != nil {
+					for k := range ds.Spec.Template.ObjectMeta.Labels {
+						labels[k] = ds.Spec.Template.ObjectMeta.Labels[k]
+					}
 				}
+			case "ReplicaSet":
+				rs, _ := kubeClient.AppsV1beta2().ReplicaSets(podNs).Get(owner.Name, metav1.GetOptions{})
+				if rs != nil {
+					for k := range rs.Spec.Template.ObjectMeta.Labels {
+						labels[k] = rs.Spec.Template.ObjectMeta.Labels[k]
+					}
+				}
+			default:
+				labels = pod.GetLabels()
 			}
 		}
 	}
