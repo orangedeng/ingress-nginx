@@ -157,6 +157,7 @@ func (s statusSync) keyfunc(input interface{}) (interface{}, error) {
 // NewStatusSyncer returns a new Sync instance
 func NewStatusSyncer(config Config) Sync {
 	pod, err := k8s.GetPodDetails(config.Client)
+	fmt.Printf("%v\n", *pod)
 	if err != nil {
 		glog.Fatalf("unexpected error obtaining pod information: %v", err)
 	}
