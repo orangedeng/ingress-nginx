@@ -17,6 +17,7 @@ limitations under the License.
 package k8s
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
@@ -113,7 +114,15 @@ func GetPodDetails(kubeClient clientset.Interface) (*PodInfo, error) {
 		for _, owner := range owners {
 			switch owner.Kind {
 			case "DaemonSet":
-				ds, _ := kubeClient.ExtensionsV1beta1().DaemonSets(podNs).Get(owner.Name, metav1.GetOptions{})
+				ds, err := kubeClient.ExtensionsV1beta1().DaemonSets(podNs).Get(owner.Name, metav1.GetOptions{})
+				if err != nil {
+					println(err.Error())
+				}
+				d, err := json.Marshal(ds)
+				if err != nil {
+					println(err.Error())
+				}
+				println(string(d))
 				for k := range ds.Spec.Template.ObjectMeta.Labels {
 					labels[k] = ds.Spec.Template.ObjectMeta.Labels[k]
 				}
