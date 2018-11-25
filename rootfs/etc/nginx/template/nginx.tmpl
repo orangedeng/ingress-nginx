@@ -253,8 +253,8 @@ http {
     # validate $pass_access_scheme and $scheme are http to force a redirect
     map "$scheme:$pass_access_scheme" $redirect_to_https {
         default          0;
-        "http:http"      1;
-        "https:http"     1;
+        "http:http"      0;
+        "https:http"     0;
     }
 
     map $http_x_forwarded_port $pass_server_port {
