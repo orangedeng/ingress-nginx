@@ -1,0 +1,17 @@
+---
+pipeline:
+  build:
+    privileged: true
+    image: rancher/dapper:1.11.2
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    commands:
+    - ./scripts/rancher-prepare dapper ci
+
+  stage-binaries:
+    image: rancher/dapper:1.11.2
+    commands:
+    - cp -r ./bin/* ./
+    when:
+      branch: master
+      event: tag
